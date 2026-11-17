@@ -111,6 +111,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
 .codein{display:block;margin:6px auto 4px;width:min(260px,80%);text-align:center;font:700 44px/1 var(--font);letter-spacing:.3em;padding:10px 0 10px .3em;border:0;border-radius:14px;box-shadow:inset 0 0 0 3px #9fb0ff;background:#fff;color:var(--ui-ink);text-transform:uppercase;user-select:text;-webkit-user-select:text;touch-action:auto}
 .lobcode{display:flex;align-items:center;justify-content:center;gap:14px;font:700 16px/1 var(--font);color:var(--ui-ink)}
 .lobcode b{font:700 48px/1 var(--font);letter-spacing:.18em;background:#fff3a6;border:3px solid var(--ui-ink,#2a1b3d);border-radius:14px;padding:8px 10px 8px 18px}
+.lobpick{display:flex;align-items:center;justify-content:center;gap:10px;font:700 14px/1 var(--font);color:var(--ui-ink)}.lobpick select{font:700 15px/1.2 var(--font);padding:8px 10px;border-radius:10px;border:0;box-shadow:inset 0 0 0 2px #9fb0ff;background:#fff;color:var(--ui-ink);max-width:min(380px,70vw)}
 .lobsong{text-align:center;font:700 15px/1.4 var(--font);color:var(--ink-soft)}
 .lobp{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .lobp .pl{display:grid;justify-items:center;gap:6px;padding:10px 6px;border-radius:14px;background:#fff8e8;border:3px solid rgba(42,27,61,.25);min-height:150px;align-content:center}
@@ -344,10 +345,10 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
 .tg,.guide,.lchip,.optsel select{border-style:solid!important;border-width:2px!important;border-color:transparent!important;border-image:url(ui/btn_sub.png) 228 228 228 228 fill / 17.9px 17.9px 17.9px 17.9px stretch!important;height:36px;background:none!important;box-shadow:none!important;padding:0 16px!important;color:var(--ui-ink)!important;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .optsel select{-webkit-appearance:none;appearance:none;min-width:90px;font-size:13px!important;line-height:1!important;text-align:center;text-align-last:center}
 .optsel{color:var(--ui-ink);white-space:nowrap}
-#tchBtn{border-style:solid!important;border-width:2px!important;border-color:transparent!important;border-image:url(ui/btn_sub.png) 228 228 228 228 fill / 14.9px 14.9px 14.9px 14.9px stretch!important;height:30px;background:none!important;box-shadow:none!important;padding:0 12px!important;color:var(--ui-ink)!important;white-space:nowrap}
+#tchBtn,#modeBtn{border-style:solid!important;border-width:2px!important;border-color:transparent!important;border-image:url(ui/btn_sub.png) 228 228 228 228 fill / 14.9px 14.9px 14.9px 14.9px stretch!important;height:30px;background:none!important;box-shadow:none!important;padding:0 12px!important;color:var(--ui-ink)!important;white-space:nowrap}
 #tchBtn.on{filter:hue-rotate(140deg) saturate(1.4)}
 #meBtn{position:absolute;left:10px;bottom:46px;z-index:5;height:30px!important;font:700 11px/1 var(--font)}
-.selfoot{display:flex;gap:8px;align-items:center;flex:none;padding:2px 4px 0;min-width:0}.selfoot #meBtn,.selfoot #tchBtn{position:static!important;flex:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.selfoot #meBtn{flex:0 1 auto;min-width:0}   /* 곡 목록을 가리지 않게 곡 선택 창 아래에 */
+.selfoot{display:flex;gap:8px;align-items:center;flex:none;padding:2px 4px 0;min-width:0}.selfoot #meBtn,.selfoot #tchBtn,.selfoot #modeBtn{position:static!important;font:700 10px/1 var(--font);flex:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.selfoot #meBtn{flex:0 1 auto;min-width:0}   /* 곡 목록을 가리지 않게 곡 선택 창 아래에 */
 .song{background:none!important;box-shadow:none!important;border-style:solid;border-width:2px;border-color:transparent;border-image:url(ui/song_item.png) 208 80 208 352 fill / 48.9px 18.8px 48.9px 82.7px stretch;height:98px;box-sizing:border-box;padding:14px 26px 14px 92px;color:var(--ui-ink);align-items:center;overflow:hidden}
 /* */.song.on{border-style:solid;border-width:2px;border-color:transparent;border-image:url(ui/song_item_on.png) 180 320 190 362 fill / 46.4px 82.6px 49.0px 93.4px / 17.0px 23.2px 0 0 stretch;}   /* 반짝이는 칸 밖으로 튀어나가고, 칸 몸통은 다른 곡과 같은 크기 */
 .song .slv{position:relative;flex:none;box-sizing:border-box;width:56px;height:55px;margin-left:-72.4px;margin-right:16.4px;color:var(--ui-ink);display:flex;align-items:center;justify-content:center;-webkit-font-smoothing:none}   /* 그림 속 네모 안쪽(밝은 칸)에 맞춤: 일반 21.6~77.6px */
@@ -435,7 +436,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
       <div class="col panel px">
         <div class="hd"><h2>곡 선택</h2><span class="tag">STAGE</span></div>
         <div class="lvtabs one" id="lvTabs"></div><div class="lvtabs grp" id="lvTabs2"></div><div class="songs" id="songList"></div>
-        <div class="selfoot"><button type="button" id="meBtn" class="tg">나</button><button type="button" id="tchBtn">선생님</button></div>
+        <div class="selfoot"><button type="button" id="meBtn" class="tg">나</button><button type="button" id="tchBtn">선생님</button><button type="button" id="modeBtn">모드 바꾸기</button></div>
       </div>
       <div class="col panel px" id="detail">
         <div class="detail">
@@ -450,17 +451,14 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
         <div class="stats" id="stats"></div>
         <div class="row">
           <div class="best grow" id="best"></div>
+<label class="optsel">배경<select id="themeSel"><option value="arena">경기장</option><option value="beach">바닷가</option><option value="street">동네 골목</option><option value="halloween">할로윈</option><option value="ski">스키장</option><option value="school">여름 하교길</option></select></label>
           <label class="optsel">버튼 위치<select id="sideSel"><option value="right">오른쪽</option><option value="left">왼쪽</option></select></label>
           <label class="optsel">가이드 소리<select id="guideSel"><option value="on">켜기</option><option value="off">끄기</option></select></label>
-          <div class="sync">싱크
-            <button type="button" id="syncMinus" aria-label="싱크 앞당기기">-</button>
-            <b id="syncVal">0ms</b>
-            <button type="button" id="syncPlus" aria-label="싱크 늦추기">+</button>
-          </div>
+
         </div>
         <div class="btns">
-          <button class="pbtn alt" type="button" id="modeBtn">리듬 · 혼자</button>
-          <label class="optsel">배경<select id="themeSel"><option value="arena">경기장</option><option value="beach">바닷가</option><option value="street">동네 골목</option><option value="halloween">할로윈</option><option value="ski">스키장</option><option value="school">여름 하교길</option></select></label>
+          
+
           <label class="optsel">채보<select id="chartSel"></select></label>
           <button class="pbtn alt" type="button" id="unitBtn" hidden>복습 단원</button>
           <button class="pbtn alt" type="button" id="stuBtn" hidden>학생 관리</button>
@@ -605,6 +603,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
       <div class="hd"><h2>대기실</h2><span class="tag" id="lobMode">리듬 모드</span></div>
       <div class="lobcode"><span>방 코드</span><b id="lobCode">----</b></div>
       <div class="lobsong" id="lobSong"></div>
+      <label class="lobpick" id="lobPick" hidden>노래<select id="lobSongSel"></select></label>
       <div class="lobp" id="lobPlayers"></div>
       <div class="lmsg" id="lobMsg" style="text-align:center;color:var(--ui-ink)"></div>
       <div class="btns"><button class="pbtn alt" type="button" id="lobLeave">나가기</button><button class="pbtn go" type="button" id="lobReady">준비!</button></div>
@@ -1146,7 +1145,7 @@ async function loadScene(){
 }
 const GRASS_T=2.0,GRASS_RES=2;
 /* 화면 아래 작은 글씨: 버전과 그래픽 상태 (휴대폰에서 문제를 찾기 위해) */
-const APP_VER='v102';
+const APP_VER='v103';
 function showDiag(){const el=document.getElementById('credit');if(!el)return;
   const parts=[APP_VER,SCN.gl?(SCN.gl.arena?'그래픽: 고급':'그래픽: 고급(경기장 없음)'):'그래픽: 기본'+(SCN.glErr?' ('+SCN.glErr+')':''),SCN.arenaImg?'경기장 OK':'경기장 그림 없음',SP.kid&&SP.kid.anim?'캐릭터 OK':'캐릭터 기본'];
   parts.push('프레임 '+Object.values(BOARD).reduce((a,v)=>a+(v?v.filter(Boolean).length:0),0)+' · 화면 '+lab.width+'x'+lab.height+(SCN.hiFail?' · 대체 그리기':''));
@@ -2439,7 +2438,6 @@ function renderSelect(){
   RANK.load(s.id,rankKey(),()=>{if(S.screen==='select')renderSelect();if(!$('rankM').hidden)renderRank();});
   {const L=RANK.get(s.id,rankKey()),me=playerName(),mi=L.findIndex(x=>x.n===me);
     $('best').innerHTML=(L.length?`1위 <b>${esc(L[0].n)}</b> ${L[0].s.toLocaleString()}`:'아직 기록이 없어요')+(mi>=0?`<br>내 순위 ${mi+1}위 · ${L[mi].s.toLocaleString()}`:'');}
-  $('syncVal').textContent=(S.offset>0?'+':'')+S.offset+'ms';
   $('sideSel').value=S.padSide==='left'?'left':'right';$('pad').classList.toggle('left',S.padSide==='left');applyPad();
 
   $('guideSel').value=S.guide?'on':'off';
@@ -2567,12 +2565,13 @@ FB.init();
 const ROOM={code:null,ref:null,data:null,live:false,started:false,
   ALPHA:'ABCDEFGHJKLMNPQRSTUVWXYZ23456789',   /* 헷갈리는 O·0·I·1 빼기 */
   me(){return {name:playerName(),gen:S.look.gen,ready:false,at:firebase.database.ServerValue.TIMESTAMP};},
-  async make(){if(!await FB.wait())return lobMsg('인터넷 연결이 안 돼요');const s=SONGS[S.songIdx];
+  async make(){if(!await FB.wait()){toast('방을 못 만들었어요','인터넷 연결이 안 돼요');return;}const s=SONGS[S.songIdx];
     for(let n=0;n<6;n++){let code='';for(let i=0;i<4;i++)code+=this.ALPHA[Math.random()*this.ALPHA.length|0];
       const room={host:FB.uid,song:s.id,chart:chartKey(),mode:S.mode==='speed'?'speed':'normal',state:'wait',seed:(Math.random()*2e9)|0,made:firebase.database.ServerValue.TIMESTAMP,players:{[FB.uid]:this.me()}};
-      const r=await FB.db.ref('rooms/'+code).transaction(c=>c?undefined:room).catch(()=>null);
-      if(r&&r.committed){FB.db.ref('rooms/'+code).onDisconnect().remove();return this.enter(code);}}
-    toast('방을 못 만들었어요','잠시 뒤에 다시 해 보세요');},
+      let err=null;const r=await FB.db.ref('rooms/'+code).transaction(c=>c?undefined:room).catch(e=>{err=e;return null;});
+      if(r&&r.committed){FB.db.ref('rooms/'+code).onDisconnect().remove();return this.enter(code);}
+      if(err){toast('방을 못 만들었어요',/permission/i.test(String(err))?'데이터베이스 규칙을 먼저 붙여넣어 주세요':'인터넷 연결을 확인해 주세요');modeShow();return;}}
+    toast('방을 못 만들었어요','잠시 뒤에 다시 해 보세요');modeShow();},
   async join(code){code=(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');if(code.length!==4)return '코드는 4자리예요';
     if(!await FB.wait())return '인터넷 연결이 안 돼요';
     let v=null;try{v=(await FB.db.ref('rooms/'+code).get()).val();}catch(e){return '방을 찾지 못했어요';}
@@ -2586,15 +2585,14 @@ const ROOM={code:null,ref:null,data:null,live:false,started:false,
     if(!v||!v.players||!v.players[FB.uid]){const was=this.code;this.close();if(S.screen!=='play')toast('방이 없어졌어요','방장이 나갔거나 연결이 끊겼어요');return;}
     this.data=v;const si=SONGS.findIndex(x=>x.id===v.song);
     if(si>=0&&S.songIdx!==si&&S.screen!=='play'){S.songIdx=si;}
-    if(S.screen!=='play'){S.chartKind=v.chart==='mine'?S.chartKind:v.chart;S.mode=v.mode==='speed'?'speed':'normal';}
+    if(S.screen!=='play'){S.useMine=false;S.chartKind=v.chart==='mine'?S.chartKind:v.chart;S.mode=v.mode==='speed'?'speed':'normal';}
     for(const id in v.players)loadChar(v.players[id].gen);
     if(si>=0)loadSong(SONGS[si]).catch(()=>{});
     renderLobby();
     const P=Object.entries(v.players),allReady=P.length>=2&&P.every(([,p])=>p.ready);
-    if(v.host===FB.uid&&v.state==='wait'&&allReady)this.ref.update({state:'go',startAt:FB.now()+6000,live:null});
+    if(v.host===FB.uid&&v.state==='wait'&&allReady){this.ref.update({state:'go',startAt:FB.now()+6000,live:null});return;}   /* 바뀐 방 정보가 다시 들어오면 그때 출발 */
     if(v.state==='go'&&!this.started&&v.startAt){this.started=true;this.live=true;$('lobbyM').hidden=true;S.tutMode=false;
       this.ref.onDisconnect().cancel();this.ref.child('players/'+FB.uid).onDisconnect().update({gone:true});startGame();}
-    if(v.state==='wait'&&this.started){this.started=false;}
     if(G&&G.race)this.syncRivals(v);},
   ready(){if(!this.ref||!this.data)return;const me=this.data.players[FB.uid];this.ref.child(`players/${FB.uid}/ready`).set(!me.ready);sfx('ui');},
   close(){if(this.ref){this.ref.off();if(this.liveRef)this.liveRef.off();}
@@ -2632,7 +2630,11 @@ function waitRivals(cb){if(!G||!G.race){cb();return;}const t0=performance.now();
 function lobMsg(t){$('lobMsg').textContent=t;}
 function renderLobby(){const v=ROOM.data;if(!v)return;$('lobCode').textContent=ROOM.code;
   const s=SONGS.find(x=>x.id===v.song);$('lobMode').textContent=v.mode==='speed'?'스피드 모드':'리듬 모드';
-  $('lobSong').textContent=s?`${s.title} · ${CHART_NAME[v.chart]||v.chart}`:'';
+  const host=v.host===FB.uid&&v.state==='wait';$('lobPick').hidden=!host;
+  $('lobSong').textContent=host?'방장이 노래를 골라요':s?`노래: ${s.title} · ${CHART_NAME[v.chart]||v.chart}`:'';
+  if(host){const sel=$('lobSongSel'),want=`${SONGS.indexOf(s)}|${v.chart}`;
+    if(!sel.options.length){let h='';SONGS.forEach((so,i)=>{if(so.locked||!so.data||!so.data.charts)return;for(const k of ['kick','normal'])if(so.data.charts[k])h+=`<option value="${i}|${k}">${esc(so.title)} · ${CHART_NAME[k]}</option>`;});sel.innerHTML=h;}
+    if(sel.value!==want)sel.value=want;}
   const P=Object.entries(v.players).sort((a,b)=>(a[0]===v.host?-1:b[0]===v.host?1:(a[1].at||0)-(b[1].at||0)));
   let h=P.map(([id,p])=>{const ch=CHARS.find(c=>c.id===p.gen)||CHARS[0];return `<div class="pl${p.ready?' rd':''}${id===FB.uid?' me':''}"><img src="${ch.selfie}" alt=""><b>${esc(p.name)}${id===FB.uid?' (나)':''}</b><small>${p.ready?'준비 완료!':'기다리는 중'}${id===v.host?' · 방장':''}</small></div>`;}).join('');
   for(let i=P.length;i<3;i++)h+=`<div class="pl"><div class="empty">친구를<br>기다려요</div></div>`;
@@ -2640,6 +2642,8 @@ function renderLobby(){const v=ROOM.data;if(!v)return;$('lobCode').textContent=R
   const me=v.players[FB.uid];$('lobReady').textContent=me&&me.ready?'준비 취소':'준비!';
   lobMsg(v.state==='go'?'곧 출발해요!':P.length<2?`친구에게 코드 ${ROOM.code} 를 알려 주세요`:P.every(([,p])=>p.ready)?'모두 준비! 곧 출발해요':'모두 준비를 누르면 3초 뒤에 출발해요');}
 $('lobReady').onclick=()=>ROOM.ready();
+$('lobSongSel').onchange=e=>{const v=ROOM.data;if(!v||v.host!==FB.uid||v.state!=='wait')return;const [i,k]=e.target.value.split('|'),so=SONGS[+i];if(!so)return;
+  const up={song:so.id,chart:k};for(const id in v.players)up[`players/${id}/ready`]=false;ROOM.ref.update(up);sfx('ui');};
 $('lobLeave').onclick=()=>{sfx('ui');ROOM.leave();};
 
 /* ===== 모드 고르기 창 ===== */
@@ -2651,13 +2655,13 @@ function modeShow(){for(let i=1;i<=4;i++)$('modeS'+i).hidden=i!==modeStep;
   const mb=$('modeS2').querySelector('[data-p="multi"]');
   if(modeStep===2){mb.disabled=false;$('multiNote').innerHTML='친구 2명까지<br>같이 경주해요';FB.wait().then(ok=>{if(!ok){mb.disabled=true;$('multiNote').innerHTML='온라인 주소에서만<br>할 수 있어요';}});}
   if(modeStep===4){$('codeIn').value='';$('codeMsg').textContent='';setTimeout(()=>$('codeIn').focus(),60);}}
-function updModeBtn(){$('modeBtn').textContent=(S.mode==='speed'?'스피드':'리듬')+' · '+(S.play==='make'?'방 만들기':'혼자');
+function updModeBtn(){$('modeBtn').textContent=(S.mode==='speed'?'스피드 모드':'리듬 모드')+' · 바꾸기';
   $('startBtn').textContent=S.play==='make'?'방 만들기 ▶':'START ▶';}
 $('modeS1').querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;store.set('mode',S.mode);sfx('ui');modeStep=2;modeShow();});
 $('modeS2').querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{if(b.disabled)return;sfx('ui');
   if(b.dataset.p==='solo'){S.play='solo';$('modeM').hidden=true;updModeBtn();renderSelect();return;}modeStep=3;modeShow();});
 $('modeS3').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{sfx('ui');
-  if(b.dataset.r==='make'){S.play='make';$('modeM').hidden=true;updModeBtn();renderSelect();toast('노래를 고르고 "방 만들기"를 눌러요','');return;}modeStep=4;modeShow();});
+  if(b.dataset.r==='make'){if(b.disabled)return;b.disabled=true;$('modeTitle').textContent='방을 만드는 중…';ROOM.make().finally(()=>{b.disabled=false;});return;}modeStep=4;modeShow();});
 $('modeBack').onclick=()=>{sfx('ui');if(modeStep===1||modeStep===2&&false){$('modeM').hidden=true;return;}modeStep=modeStep===4?3:modeStep-1;if(modeStep<1){$('modeM').hidden=true;return;}modeShow();};
 $('modeBtn').onclick=()=>{sfx('ui');openMode();};
 $('codeIn').addEventListener('input',e=>{const el=e.target,p=el.selectionStart;el.value=el.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4);try{el.setSelectionRange(p,p);}catch(_){}});   /* 소문자로 써도 대문자로 */
@@ -2726,8 +2730,6 @@ $('lookOk').onclick=()=>{sfx('ui');$('lookM').hidden=true;renderSelect();
   if(profFirst)openHow(false,true);};   // 처음 가입한 학생: 게임 방법을 보고 바로 연습
 if(0)$('lookRand').onclick=()=>{for(const p in LOOKS){const vs=Object.keys(LOOKS[p]);S.look[p]=vs[Math.random()*vs.length|0];}store.set('look',S.look);composeKid();sfx('ui');renderLookOpts();};
 
-$('syncMinus').onclick=()=>{S.offset=Math.max(-200,S.offset-10);store.set('offset',S.offset);renderSelect();};
-$('syncPlus').onclick=()=>{S.offset=Math.min(200,S.offset+10);store.set('offset',S.offset);renderSelect();};
 $('startBtn').onclick=()=>{if(!playerName()){sfx('ui');openLogin();return;}sfx('ui');S.tutMode=false;if(S.play==='make'){ROOM.make();return;}startGame();};   // 게임 방법은 자동으로 띄우지 않음 (v95)
 $('howBtn').onclick=()=>{sfx('ui');openHow(false);};
 let howThenStart=false;
