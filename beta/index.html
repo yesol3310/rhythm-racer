@@ -46,7 +46,10 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
 #select{display:flex;align-items:center;justify-content:center;background:rgba(42,27,61,.45);
   padding:calc(20px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));box-sizing:border-box}
 .sel{width:min(1000px,100%);max-height:100%;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:30px;overflow:auto;padding:8px}
-#detail .optrow{margin-top:auto;justify-content:center;flex-wrap:wrap;gap:10px 16px}#detail>.btns{margin-top:auto}
+#detail .optrow{justify-content:center;flex-wrap:wrap;gap:10px 16px}#detail>.btns{margin-top:auto}
+#top5{display:grid;gap:4px;margin-top:0}#top5 .t5h{font:700 13px/1 var(--font);color:var(--ui-ink);display:flex;justify-content:space-between;align-items:center;padding:0 2px}#top5 .t5h small{font:400 11px/1 var(--font);color:var(--ink-soft)}
+#top5 .rkrow{grid-template-columns:30px 26px minmax(0,1fr) auto auto;padding:2px 12px!important;font-size:13px}#top5 .rkrow img{height:24px}#top5 .rkrow .no{font-size:15px}#top5 .empty{font:400 12px/1.6 var(--font);color:var(--ink-soft);text-align:center;padding:10px}
+@media (max-height:520px){#top5{display:none}}
 .col{min-width:0;padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px}
 .hd{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .hd h2{margin:0;font:700 22px/1 var(--font)}
@@ -104,7 +107,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
 #tchBtn.on{background:var(--coral);color:#fff}
 .ranklist{display:flex;flex-direction:column;gap:6px;max-height:min(60vh,520px);overflow:auto;padding:4px}
 .rkrow{display:grid;grid-template-columns:44px 40px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 10px;background:#fff8e6;box-shadow:0 0 0 2px var(--ink);font:700 14px/1.2 var(--font)}
-.rkrow.me{background:#ffe08a}.rkrow .no{font-size:18px;text-align:center}.rkrow img{height:36px;width:auto;justify-self:center}.rkrow small{font:400 11px/1 var(--font);color:var(--ink-soft)}
+.rkrow.me{background:#ffe08a}.rkrow img.face{width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--ui-ink,#2a1b3d);background:#fff}#top5 .rkrow img.face{width:24px;height:24px}.rkrow .no{font-size:18px;text-align:center}.rkrow img{height:36px;width:auto;justify-self:center}.rkrow small{font:400 11px/1 var(--font);color:var(--ink-soft)}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .mcard{display:grid;gap:8px;align-content:center;justify-items:center;min-height:150px;padding:16px 10px;border:3px solid var(--ui-ink,#2a1b3d);border-radius:18px;background:#fff8e8;color:var(--ui-ink,#2a1b3d);cursor:pointer;box-shadow:0 5px 0 rgba(42,27,61,.35);font:700 24px/1.1 var(--font);text-align:center}
 .mcard small{font:400 13px/1.45 var(--font);opacity:.8}.mcard:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(42,27,61,.35)}
@@ -460,6 +463,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
 
 
         </div>
+        <div id="top5"></div>
         <div class="btns">
           
 
@@ -1149,7 +1153,7 @@ async function loadScene(){
 }
 const GRASS_T=2.0,GRASS_RES=2;
 /* 화면 아래 작은 글씨: 버전과 그래픽 상태 (휴대폰에서 문제를 찾기 위해) */
-const APP_VER='v104';
+const APP_VER='v105';
 function showDiag(){const el=document.getElementById('credit');if(!el)return;
   const parts=[APP_VER,SCN.gl?(SCN.gl.arena?'그래픽: 고급':'그래픽: 고급(경기장 없음)'):'그래픽: 기본'+(SCN.glErr?' ('+SCN.glErr+')':''),SCN.arenaImg?'경기장 OK':'경기장 그림 없음',SP.kid&&SP.kid.anim?'캐릭터 OK':'캐릭터 기본'];
   parts.push('프레임 '+Object.values(BOARD).reduce((a,v)=>a+(v?v.filter(Boolean).length:0),0)+' · 화면 '+lab.width+'x'+lab.height+(SCN.hiFail?' · 대체 그리기':''));
@@ -2440,7 +2444,7 @@ function renderSelect(){
   const cell=(k,v)=>`<div class="stat"><div class="k">${k}</div><div class="v">${v}</div></div>`;
   $('stats').innerHTML=cell('장애물',ch.notes.length+'개')+cell('복습 문제',ch.gates.length+'문제')+cell('BPM',s.data.bpm);
   const b=store.get('best',{})[s.id];
-  RANK.load(s.id,rankKey(),()=>{if(S.screen==='select')renderSelect();if(!$('rankM').hidden)renderRank();});
+  RANK.load(s.id,rankKey(),()=>{if(S.screen==='select')renderSelect();if(!$('rankM').hidden)renderRank();});renderTop5();
   {const L=RANK.get(s.id,rankKey()),me=playerName(),mi=L.findIndex(x=>x.n===me);
     $('best').innerHTML=(L.length?`1위 <b>${esc(L[0].n)}</b> ${L[0].s.toLocaleString()}`:'아직 기록이 없어요')+(mi>=0?`<br>내 순위 ${mi+1}위 · ${L[mi].s.toLocaleString()}`:'');}
   $('sideSel').value=S.padSide==='left'?'left':'right';$('pad').classList.toggle('left',S.padSide==='left');applyPad();
@@ -2716,9 +2720,12 @@ $('stuBtn').onclick=async()=>{if(!S.teacher)return;sfx('ui');STU=null;renderStud
   if(await FB.wait()){try{const v=(await FB.db.ref('acc').get()).val()||{};STU={};for(const id in v){const u=v[id];if(u&&u.nick)STU[ACC.key(u.nick)]=u;}renderStudents();}catch(e){}}};
 $('stuOk').onclick=()=>{sfx('ui');$('stuM').hidden=true;};
 $('logoutBtn').onclick=()=>{ACC.logout();sfx('ui');$('lookM').hidden=true;renderSelect();openLogin();};
-function renderRank(){const s=SONGS[S.songIdx],ck=rankKey(),L=RANK.get(s.id,ck),me=playerName();
+function rankRows(L,me){return L.map((e,i)=>{const ch=CHARS.find(c=>c.id===e.c)||CHARS[0];return `<div class="rkrow ${e.n===me?'me':''}">${i<3?`<img class="medal" src="ui/rank${i+1}.png" alt="${i+1}위">`:`<span class="no">${i+1}</span>`}<img class="face" src="${ch.selfie}" alt=""><span>${esc(e.n)}</span><span>${e.s.toLocaleString()}</span><small>${e.r||''}</small></div>`;}).join('');}
+function renderTop5(){const s=SONGS[S.songIdx];if(!s)return;const L=RANK.get(s.id,rankKey()),me=playerName();
+  $('top5').innerHTML=`<div class="t5h">이 곡 순위 TOP 5<small>${S.mode==='speed'?'스피드 모드 · ':''}순위 버튼: 20위까지</small></div>`+(L.length?rankRows(L.slice(0,5),me):'<div class="empty">아직 기록이 없어요. 첫 번째 주인공이 되어 보세요!</div>');}
+function renderRank(){const s=SONGS[S.songIdx],ck=rankKey(),L=RANK.get(s.id,ck).slice(0,20),me=playerName();
   $('rankTag').textContent=s.title+' · '+(CHART_NAME[chartKey()]||chartKey())+(S.mode==='speed'?' · 스피드':'');
-  $('rankList').innerHTML=L.length?L.map((e,i)=>{const ch=CHARS.find(c=>c.id===e.c)||CHARS[0];return `<div class="rkrow ${e.n===me?'me':''}">${i<3?`<img class="medal" src="ui/medal_${i+1}.png" alt="${i+1}위">`:`<span class="no">${i+1}</span>`}<img src="${ch.img}" alt=""><span>${esc(e.n)}</span><span>${e.s.toLocaleString()}</span><small>${e.r||''}</small></div>`;}).join(''):'<div style="font:400 13px/1.6 var(--font);color:var(--ink-soft);padding:16px;text-align:center">아직 기록이 없어요. 첫 번째 주인공이 되어 보세요!</div>';
+  $('rankList').innerHTML=L.length?rankRows(L,me):'<div style="font:400 13px/1.6 var(--font);color:var(--ink-soft);padding:16px;text-align:center">아직 기록이 없어요. 첫 번째 주인공이 되어 보세요!</div>';
   $('rankClear').hidden=!S.teacher;}
 $('rankBtn').onclick=()=>{sfx('ui');renderRank();$('rankM').hidden=false;};
 $('rankOk').onclick=()=>{sfx('ui');$('rankM').hidden=true;};
