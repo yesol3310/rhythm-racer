@@ -46,6 +46,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
 #select{display:flex;align-items:center;justify-content:center;background:rgba(42,27,61,.45);
   padding:calc(20px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));box-sizing:border-box}
 .sel{width:min(1000px,100%);max-height:100%;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:30px;overflow:auto;padding:8px}
+#detail .optrow{margin-top:auto;justify-content:center;flex-wrap:wrap;gap:10px 16px}#detail>.btns{margin-top:auto}
 .col{min-width:0;padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px}
 .hd{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .hd h2{margin:0;font:700 22px/1 var(--font)}
@@ -451,9 +452,12 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
         <div class="stats" id="stats"></div>
         <div class="row">
           <div class="best grow" id="best"></div>
-<label class="optsel">배경<select id="themeSel"><option value="arena">경기장</option><option value="beach">바닷가</option><option value="street">동네 골목</option><option value="halloween">할로윈</option><option value="ski">스키장</option><option value="school">여름 하교길</option></select></label>
+        </div>
+        <div class="row optrow">
+          <label class="optsel">배경<select id="themeSel"><option value="arena">경기장</option><option value="beach">바닷가</option><option value="street">동네 골목</option><option value="halloween">할로윈</option><option value="ski">스키장</option><option value="school">여름 하교길</option></select></label>
           <label class="optsel">버튼 위치<select id="sideSel"><option value="right">오른쪽</option><option value="left">왼쪽</option></select></label>
           <label class="optsel">가이드 소리<select id="guideSel"><option value="on">켜기</option><option value="off">끄기</option></select></label>
+
 
         </div>
         <div class="btns">
@@ -1145,7 +1149,7 @@ async function loadScene(){
 }
 const GRASS_T=2.0,GRASS_RES=2;
 /* 화면 아래 작은 글씨: 버전과 그래픽 상태 (휴대폰에서 문제를 찾기 위해) */
-const APP_VER='v103';
+const APP_VER='v104';
 function showDiag(){const el=document.getElementById('credit');if(!el)return;
   const parts=[APP_VER,SCN.gl?(SCN.gl.arena?'그래픽: 고급':'그래픽: 고급(경기장 없음)'):'그래픽: 기본'+(SCN.glErr?' ('+SCN.glErr+')':''),SCN.arenaImg?'경기장 OK':'경기장 그림 없음',SP.kid&&SP.kid.anim?'캐릭터 OK':'캐릭터 기본'];
   parts.push('프레임 '+Object.values(BOARD).reduce((a,v)=>a+(v?v.filter(Boolean).length:0),0)+' · 화면 '+lab.width+'x'+lab.height+(SCN.hiFail?' · 대체 그리기':''));
@@ -2091,7 +2095,8 @@ function drawRivals(){if(!G||!G.rivals||S.screen!=='play'||SCN.hiFail||!lg)retur
   /* 스피드 모드: 친구가 노래를 얼마나 진행했는지 = 길 위 위치. 시야(ZMAX)보다 멀면 안 보였다가 내가 따라잡으면 나타남.
      다 끝낸 친구는 결승선(노래 끝 위치)에 서서 환호 */
   const zr=r=>G.speed?ZP+(Math.min(G.race?rivalProg(r):(r.prog??t),G.dur)-t)*G.V:ZP+Math.max(-2,Math.min(14,(r.score-G.score)/2500));
-  const list=G.rivals.filter(r=>!r.gone).map(r=>({r,z:zr(r)})).filter(o=>o.z>ZP-.35&&o.z<ZMAX-1).sort((a,b)=>b.z-a.z);
+  const nowp=performance.now();for(const r of G.rivals){const zt=zr(r),dt=Math.min(.1,(nowp-(r.zT||nowp))/1000);r.zT=nowp;r.zs=r.zs==null||Math.abs(r.zs-zt)>6?zt:r.zs+(zt-r.zs)*Math.min(1,dt*4);}
+  const list=G.rivals.filter(r=>!r.gone).map(r=>({r,z:r.zs})).filter(o=>o.z>ZP-.35&&o.z<ZMAX-1).sort((a,b)=>b.z-a.z);
   c.save();c.setTransform(1,0,0,1,0,0);
   for(const {r,z} of list){const B=BOARDS[r.gen];if(!B||!B.cruise)continue;const [f,h]=rivalFrame(B,r,t);if(!f)continue;
     const bk=(BOARD_META[r.gen]||{}).k||1,ns=166*bk*SPR/BOARD_H,p=proj(r.lane*2*(ROADW+.1),z,h),q=p.s/ns,fw=f.naturalWidth||f.width,fh=f.naturalHeight||f.height,w=fw*q*sx,hh=fh*q*sy;
@@ -2621,7 +2626,7 @@ const ROOM={code:null,ref:null,data:null,live:false,started:false,
     if(v&&v.host===FB.uid){this.ref.update({state:'wait',startAt:null,live:null,seed:(Math.random()*2e9)|0});this.ref.onDisconnect().remove();}
     this.live=false;this.started=false;show('select');S.screen='select';renderSelect();$('lobbyM').hidden=false;renderLobby();}};
 /* 친구 움직임 보간: 스피드 모드는 받은 진행 + 지난 시간 × 친구 속도 */
-function rivalProg(r){if(!G.race)return r.prog;if(r.done)return G.dur;return r.prog+(performance.now()-r.recv)/1000*(r.rate||1);}
+function rivalProg(r){if(!G.race)return r.prog;if(r.done)return G.dur;return r.prog+Math.min(1.2,(performance.now()-r.recv)/1000)*(r.rate||1);}
 /* 내가 먼저 끝나면 친구들 도착을 최대 10초 기다림 */
 function waitRivals(cb){if(!G||!G.race){cb();return;}const t0=performance.now();
   const chk=()=>{const left=G.rivals.filter(r=>!r.done&&!r.gone);
