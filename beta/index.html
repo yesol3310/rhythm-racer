@@ -715,7 +715,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
       <div class="btns">
         <button class="pbtn alt" type="button" id="resSelect">곡 선택</button>
         <button class="pbtn go" type="button" id="resRetry">다시 달리기</button>
-        <button class="pbtn go" type="button" id="resLobby" hidden>같은 방에서 한 판 더</button>
+        <button class="pbtn go" type="button" id="resLobby" hidden>대기실로 돌아가기 ▶</button>
       </div>
     </div>
   </div>
@@ -1153,7 +1153,7 @@ async function loadScene(){
 }
 const GRASS_T=2.0,GRASS_RES=2;
 /* 화면 아래 작은 글씨: 버전과 그래픽 상태 (휴대폰에서 문제를 찾기 위해) */
-const APP_VER='v105';
+const APP_VER='v106';
 function showDiag(){const el=document.getElementById('credit');if(!el)return;
   const parts=[APP_VER,SCN.gl?(SCN.gl.arena?'그래픽: 고급':'그래픽: 고급(경기장 없음)'):'그래픽: 기본'+(SCN.glErr?' ('+SCN.glErr+')':''),SCN.arenaImg?'경기장 OK':'경기장 그림 없음',SP.kid&&SP.kid.anim?'캐릭터 OK':'캐릭터 기본'];
   parts.push('프레임 '+Object.values(BOARD).reduce((a,v)=>a+(v?v.filter(Boolean).length:0),0)+' · 화면 '+lab.width+'x'+lab.height+(SCN.hiFail?' · 대체 그리기':''));
@@ -2099,7 +2099,13 @@ function drawRivals(){if(!G||!G.rivals||S.screen!=='play'||SCN.hiFail||!lg)retur
   /* 스피드 모드: 친구가 노래를 얼마나 진행했는지 = 길 위 위치. 시야(ZMAX)보다 멀면 안 보였다가 내가 따라잡으면 나타남.
      다 끝낸 친구는 결승선(노래 끝 위치)에 서서 환호 */
   const zr=r=>G.speed?ZP+(Math.min(G.race?rivalProg(r):(r.prog??t),G.dur)-t)*G.V:ZP+Math.max(-2,Math.min(14,(r.score-G.score)/2500));
-  const nowp=performance.now();for(const r of G.rivals){const zt=zr(r),dt=Math.min(.1,(nowp-(r.zT||nowp))/1000);r.zT=nowp;r.zs=r.zs==null||Math.abs(r.zs-zt)>6?zt:r.zs+(zt-r.zs)*Math.min(1,dt*4);}
+  const nowp=performance.now();for(const r of G.rivals){const dt=Math.min(.1,(nowp-(r.zT||nowp))/1000);r.zT=nowp;
+    if(G.speed&&G.race){/* 친구도 내 캐릭터처럼 매 프레임 자기 속도로 달림. 서버 값과 차이는 0.7초쯤에 걸쳐 살살 맞춤 */
+      if(r.done)r.est=G.dur;else if(r.est==null){r.est=r.prog;r.err=0;}
+      else if(!r.done){const c=(r.err||0)*Math.min(1,dt*1.5);r.est+=dt*(r.rate||1)*(AE.ctx&&AE.ctx.state==='running'?1:0)+c;r.err=(r.err||0)-c;}
+      r.zs=ZP+(Math.min(r.est,G.dur)-t)*G.V;}
+    else{/* 리듬 모드: 점수 차이 거리를 1초에 최대 1.2칸만 움직이게 → 툭툭 튀지 않음 */
+      const zt=zr(r);if(r.zs==null)r.zs=zt;else{const d=zt-r.zs,m=1.2*dt;r.zs+=Math.max(-m,Math.min(m,d*Math.min(1,dt*2)));}}}
   const list=G.rivals.filter(r=>!r.gone).map(r=>({r,z:r.zs})).filter(o=>o.z>ZP-.35&&o.z<ZMAX-1).sort((a,b)=>b.z-a.z);
   c.save();c.setTransform(1,0,0,1,0,0);
   for(const {r,z} of list){const B=BOARDS[r.gen];if(!B||!B.cruise)continue;const [f,h]=rivalFrame(B,r,t);if(!f)continue;
@@ -2600,7 +2606,7 @@ const ROOM={code:null,ref:null,data:null,live:false,started:false,
     renderLobby();
     const P=Object.entries(v.players),allReady=P.length>=2&&P.every(([,p])=>p.ready);
     if(v.host===FB.uid&&v.state==='wait'&&allReady){this.ref.update({state:'go',startAt:FB.now()+6000,live:null});return;}   /* 바뀐 방 정보가 다시 들어오면 그때 출발 */
-    if(v.state==='go'&&!this.started&&v.startAt){this.started=true;this.live=true;$('lobbyM').hidden=true;S.tutMode=false;
+    if(v.state==='go'&&!this.started&&v.startAt&&v.startAt!==this.lastStart){this.started=true;this.lastStart=v.startAt;this.live=true;$('lobbyM').hidden=true;S.tutMode=false;
       this.ref.onDisconnect().cancel();this.ref.child('players/'+FB.uid).onDisconnect().update({gone:true});startGame();}
     if(G&&G.race)this.syncRivals(v);},
   ready(){if(!this.ref||!this.data)return;const me=this.data.players[FB.uid];this.ref.child(`players/${FB.uid}/ready`).set(!me.ready);sfx('ui');},
@@ -2616,26 +2622,28 @@ const ROOM={code:null,ref:null,data:null,live:false,started:false,
     let last={};clearInterval(this.tick);
     this.tick=setInterval(()=>{if(!G||!G.race||!this.ref){clearInterval(this.tick);return;}
       const o={s:G.score,c:G.combo,p:+G.t.toFixed(2),r:+AE.rate.toFixed(3),a:G.lastAct||'',f:G.finished?1:0};
-      if(JSON.stringify(o)!==JSON.stringify(last)){last=o;this.ref.child('live/'+FB.uid).update(o).catch(()=>{});}},400);},
+      if(JSON.stringify(o)!==JSON.stringify(last)){last=o;this.ref.child('live/'+FB.uid).update(o).catch(()=>{});}},300);},
   onLive(L){if(!G||!G.rivals)return;const now=performance.now();
     for(const r of G.rivals){const d=L[r.id];if(!d)continue;
       r.score=d.s||0;r.combo=d.c||0;r.prog=d.p||0;r.rate=d.r||1;r.recv=now;
+      {const tgt=r.prog+.12*r.rate;   /* 오는 데 걸린 시간만큼 앞 */if(r.est==null||Math.abs(tgt-r.est)>3){r.est=tgt;r.err=0;}else r.err=tgt-r.est;}
       if(d.a&&d.a!==r.lastA){r.lastA=d.a;const k=d.a.split(':')[0];r.act=k;r.actT=G.t;r.actD=+(d.a.split(':')[2]||0);}
       if(d.f&&!r.done){r.done=true;r.doneT=G.t;r.finAt=d.ft||FB.now();}}},
   syncRivals(v){if(!G||!G.rivals)return;for(const r of G.rivals){const p=v.players[r.id];r.gone=!p||!!p.gone;}},
   finish(){if(!this.ref)return;this.ref.child('live/'+FB.uid).update({f:1,ft:firebase.database.ServerValue.TIMESTAMP,s:G.score}).catch(()=>{});clearInterval(this.tick);},
   /* 결과 화면 → 같은 방에서 한 판 더 */
-  again(){if(!this.ref){goSelect();return;}const v=this.data;
+  again(){if(!this.ref){goSelect();return;}const v=this.data;G.race=false;
     this.ref.child('players/'+FB.uid).update({ready:false,gone:null});this.ref.child('players/'+FB.uid).onDisconnect().remove();
     if(v&&v.host===FB.uid){this.ref.update({state:'wait',startAt:null,live:null,seed:(Math.random()*2e9)|0});this.ref.onDisconnect().remove();}
     this.live=false;this.started=false;show('select');S.screen='select';renderSelect();$('lobbyM').hidden=false;renderLobby();}};
 /* 친구 움직임 보간: 스피드 모드는 받은 진행 + 지난 시간 × 친구 속도 */
 function rivalProg(r){if(!G.race)return r.prog;if(r.done)return G.dur;return r.prog+Math.min(1.2,(performance.now()-r.recv)/1000)*(r.rate||1);}
-/* 내가 먼저 끝나면 친구들 도착을 최대 10초 기다림 */
-function waitRivals(cb){if(!G||!G.race){cb();return;}const t0=performance.now();
-  const chk=()=>{const left=G.rivals.filter(r=>!r.done&&!r.gone);
-    if(!left.length||performance.now()-t0>10000){$('count').innerHTML='';cb();return;}
-    $('count').innerHTML=`<small>친구들을 기다리는 중… ${Math.ceil(10-(performance.now()-t0)/1000)}</small>`;setTimeout(chk,250);};chk();}
+/* 내가 먼저 끝나면 마지막 친구가 결승선에 들어올 때까지 기다림 (끊긴 친구·8초 넘게 소식 없는 친구는 빼고) */
+function waitRivals(cb){if(!G||!G.race){cb();return;}
+  const chk=()=>{const now=performance.now();for(const r of G.rivals)if(!r.done&&!r.gone&&now-(r.recv||now)>8000)r.gone=true;
+    const left=G.rivals.filter(r=>!r.done&&!r.gone);
+    if(!left.length){$('count').innerHTML='';cb();return;}
+    $('count').innerHTML=`<small>${left.map(r=>esc(r.name)).join(', ')} 기다리는 중…</small>`;setTimeout(chk,250);};chk();}
 function lobMsg(t){$('lobMsg').textContent=t;}
 function renderLobby(){const v=ROOM.data;if(!v)return;$('lobCode').textContent=ROOM.code;
   const s=SONGS.find(x=>x.id===v.song);$('lobMode').textContent=v.mode==='speed'?'스피드 모드':'리듬 모드';
@@ -2649,7 +2657,7 @@ function renderLobby(){const v=ROOM.data;if(!v)return;$('lobCode').textContent=R
   for(let i=P.length;i<3;i++)h+=`<div class="pl"><div class="empty">친구를<br>기다려요</div></div>`;
   $('lobPlayers').innerHTML=h;
   const me=v.players[FB.uid];$('lobReady').textContent=me&&me.ready?'준비 취소':'준비!';
-  lobMsg(v.state==='go'?'곧 출발해요!':P.length<2?`친구에게 코드 ${ROOM.code} 를 알려 주세요`:P.every(([,p])=>p.ready)?'모두 준비! 곧 출발해요':'모두 준비를 누르면 3초 뒤에 출발해요');}
+  lobMsg(v.state==='go'&&v.startAt===ROOM.lastStart&&!ROOM.started?'친구들이 아직 결과를 보고 있어요. 방장이 돌아오면 다시 시작해요':v.state==='go'?'곧 출발해요!':P.length<2?`친구에게 코드 ${ROOM.code} 를 알려 주세요`:P.every(([,p])=>p.ready)?'모두 준비! 곧 출발해요':'모두 준비를 누르면 3초 뒤에 출발해요');}
 $('lobReady').onclick=()=>ROOM.ready();
 $('lobSongSel').onchange=e=>{const v=ROOM.data;if(!v||v.host!==FB.uid||v.state!=='wait')return;const [i,k]=e.target.value.split('|'),so=SONGS[+i];if(!so)return;
   const up={song:so.id,chart:k};for(const id in v.players)up[`players/${id}/ready`]=false;ROOM.ref.update(up);sfx('ui');};
