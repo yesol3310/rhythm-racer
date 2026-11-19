@@ -108,6 +108,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
 .ranklist{display:flex;flex-direction:column;gap:6px;max-height:min(60vh,520px);overflow:auto;padding:4px}
 .rkrow{display:grid;grid-template-columns:44px 40px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 10px;background:#fff8e6;box-shadow:0 0 0 2px var(--ink);font:700 14px/1.2 var(--font)}
 .rkrow.me{background:#ffe08a}.rkrow img.face{width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--ui-ink,#2a1b3d);background:#fff}#top5 .rkrow img.face{width:24px;height:24px}.rkrow .no{font-size:18px;text-align:center}.rkrow img{height:36px;width:auto;justify-self:center}.rkrow small{font:400 11px/1 var(--font);color:var(--ink-soft)}
+.fsbtn{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));z-index:5;font:700 15px/1 var(--font);color:var(--ui-ink,#2a1b3d);background:rgba(255,248,232,.92);border:3px solid var(--ui-ink,#2a1b3d);border-radius:12px;padding:9px 13px;box-shadow:0 3px 0 rgba(0,0,0,.3);cursor:pointer}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .mcard{display:grid;gap:8px;align-content:center;justify-items:center;min-height:150px;padding:16px 10px;border:3px solid var(--ui-ink,#2a1b3d);border-radius:18px;background:#fff8e8;color:var(--ui-ink,#2a1b3d);cursor:pointer;box-shadow:0 5px 0 rgba(42,27,61,.35);font:700 24px/1.1 var(--font);text-align:center}
 .mcard small{font:400 13px/1.45 var(--font);opacity:.8}.mcard:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(42,27,61,.35)}
@@ -354,10 +355,10 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
 .tg,.guide,.lchip,.optsel select{border-style:solid!important;border-width:2px!important;border-color:transparent!important;border-image:url(ui/btn_sub.png) 228 228 228 228 fill / 17.9px 17.9px 17.9px 17.9px stretch!important;height:36px;background:none!important;box-shadow:none!important;padding:0 16px!important;color:var(--ui-ink)!important;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .optsel select{-webkit-appearance:none;appearance:none;min-width:90px;font-size:13px!important;line-height:1!important;text-align:center;text-align-last:center}
 .optsel{color:var(--ui-ink);white-space:nowrap}
-#tchBtn,#modeBtn{border-style:solid!important;border-width:2px!important;border-color:transparent!important;border-image:url(ui/btn_sub.png) 228 228 228 228 fill / 14.9px 14.9px 14.9px 14.9px stretch!important;height:30px;background:none!important;box-shadow:none!important;padding:0 12px!important;color:var(--ui-ink)!important;white-space:nowrap}
+#tchBtn,#modeBtn,#fsBtn2{border-style:solid!important;border-width:2px!important;border-color:transparent!important;border-image:url(ui/btn_sub.png) 228 228 228 228 fill / 14.9px 14.9px 14.9px 14.9px stretch!important;height:30px;background:none!important;box-shadow:none!important;padding:0 12px!important;color:var(--ui-ink)!important;white-space:nowrap}
 #tchBtn.on{filter:hue-rotate(140deg) saturate(1.4)}
 #meBtn{position:absolute;left:10px;bottom:46px;z-index:5;height:30px!important;font:700 11px/1 var(--font)}
-.selfoot{display:flex;gap:8px;align-items:center;flex:none;padding:2px 4px 0;min-width:0}.selfoot #meBtn,.selfoot #tchBtn,.selfoot #modeBtn{position:static!important;font:700 10px/1 var(--font);flex:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.selfoot #meBtn{flex:0 1 auto;min-width:0}   /* 곡 목록을 가리지 않게 곡 선택 창 아래에 */
+.selfoot{display:flex;gap:8px;align-items:center;flex:none;padding:2px 4px 0;min-width:0}.selfoot #meBtn,.selfoot #tchBtn,.selfoot #modeBtn,.selfoot #fsBtn2{position:static!important;font:700 10px/1 var(--font);flex:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.selfoot #meBtn{flex:0 1 auto;min-width:0}   /* 곡 목록을 가리지 않게 곡 선택 창 아래에 */
 .song{background:none!important;box-shadow:none!important;border-style:solid;border-width:2px;border-color:transparent;border-image:url(ui/song_item.png) 208 80 208 352 fill / 48.9px 18.8px 48.9px 82.7px stretch;height:98px;box-sizing:border-box;padding:14px 26px 14px 92px;color:var(--ui-ink);align-items:center;overflow:hidden}
 /* */.song.on{border-style:solid;border-width:2px;border-color:transparent;border-image:url(ui/song_item_on.png) 180 320 190 362 fill / 46.4px 82.6px 49.0px 93.4px / 17.0px 23.2px 0 0 stretch;}   /* 반짝이는 칸 밖으로 튀어나가고, 칸 몸통은 다른 곡과 같은 크기 */
 .song .slv{position:relative;flex:none;box-sizing:border-box;width:56px;height:55px;margin-left:-72.4px;margin-right:16.4px;color:var(--ui-ink);display:flex;align-items:center;justify-content:center;-webkit-font-smoothing:none}   /* 그림 속 네모 안쪽(밝은 칸)에 맞춤: 일반 21.6~77.6px */
@@ -437,6 +438,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
     <div class="tap">그림 불러오는 중…</div>
     
     <div class="credit" id="credit">시안 v62</div>
+    <button type="button" class="fsbtn" id="fsBtn1">⛶ 전체화면</button>
   </div>
 
   <!-- SELECT -->
@@ -445,7 +447,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
       <div class="col panel px">
         <div class="hd"><h2>곡 선택</h2><span class="tag">STAGE</span></div>
         <div class="lvtabs one" id="lvTabs"></div><div class="lvtabs grp" id="lvTabs2"></div><div class="songs" id="songList"></div>
-        <div class="selfoot"><button type="button" id="meBtn" class="tg">나</button><button type="button" id="tchBtn">선생님</button><button type="button" id="modeBtn">모드 바꾸기</button></div>
+        <div class="selfoot"><button type="button" id="meBtn" class="tg">나</button><button type="button" id="tchBtn">선생님</button><button type="button" id="modeBtn">모드 바꾸기</button><button type="button" id="fsBtn2" class="fsb2">⛶ 전체화면</button></div>
       </div>
       <div class="col panel px" id="detail">
         <div class="detail">
@@ -1159,7 +1161,7 @@ async function loadScene(){
 }
 const GRASS_T=2.0,GRASS_RES=2;
 /* 화면 아래 작은 글씨: 버전과 그래픽 상태 (휴대폰에서 문제를 찾기 위해) */
-const APP_VER='v108';
+const APP_VER='v109';
 function showDiag(){const el=document.getElementById('credit');if(!el)return;
   const parts=[APP_VER,SCN.gl?(SCN.gl.arena?'그래픽: 고급':'그래픽: 고급(경기장 없음)'):'그래픽: 기본'+(SCN.glErr?' ('+SCN.glErr+')':''),SCN.arenaImg?'경기장 OK':'경기장 그림 없음',SP.kid&&SP.kid.anim?'캐릭터 OK':'캐릭터 기본'];
   parts.push('프레임 '+Object.values(BOARD).reduce((a,v)=>a+(v?v.filter(Boolean).length:0),0)+' · 화면 '+lab.width+'x'+lab.height+(SCN.hiFail?' · 대체 그리기':''));
@@ -2691,6 +2693,17 @@ $('codeIn').addEventListener('input',e=>{const el=e.target,p=el.selectionStart;e
 $('codeIn').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')$('codeGo').click();});
 $('codeGo').onclick=async()=>{const b=$('codeGo');if(b.disabled)return;b.disabled=true;$('codeMsg').textContent='찾는 중…';
   const err=await ROOM.join($('codeIn').value);b.disabled=false;$('codeMsg').textContent=err||'';if(err)sfx('wrong');};
+
+/* 전체화면 (아이패드 사파리는 webkit 이름, 아이폰은 지원 안 해서 버튼을 숨김) */
+const FS={el:document.documentElement,
+  on(){return !!(document.fullscreenElement||document.webkitFullscreenElement);},
+  ok(){return !!(this.el.requestFullscreen||this.el.webkitRequestFullscreen);},
+  toggle(){try{if(this.on())(document.exitFullscreen||document.webkitExitFullscreen).call(document);
+    else{const r=(this.el.requestFullscreen||this.el.webkitRequestFullscreen).call(this.el,{navigationUI:'hide'});if(r&&r.catch)r.catch(()=>toast('전체화면을 못 켰어요','브라우저가 막고 있어요'));}}catch(e){toast('전체화면을 못 켰어요','');}},
+  upd(){const t=this.on()?'⛶ 전체화면 끄기':'⛶ 전체화면';for(const id of ['fsBtn1','fsBtn2']){const b=$(id);b.textContent=t;b.hidden=!this.ok();}}};
+for(const id of ['fsBtn1','fsBtn2'])$(id).addEventListener('click',e=>{e.stopPropagation();sfx('ui');FS.toggle();});
+$('fsBtn1').addEventListener('pointerdown',e=>e.stopPropagation());
+document.addEventListener('fullscreenchange',()=>FS.upd());document.addEventListener('webkitfullscreenchange',()=>FS.upd());FS.upd();
 
 /* 로그인 창 */
 let loginNew=false;
