@@ -135,11 +135,16 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
 .sturow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 14px;background:rgba(255,255,255,.75);box-shadow:0 0 0 2px #b9c6ff;border-radius:10px;flex:none}
 .sturow b{font:700 15px/1.2 var(--font);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sturow small{display:block;font:400 11px/1.4 var(--font);color:var(--ink-soft)}
 .sturow .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.sturow .acts .tg{font-size:11px;height:32px!important}
-.charlist{display:grid;grid-template-columns:repeat(4,150px);gap:16px;justify-content:center;grid-column:1/-1;max-height:max(250px,calc(100vh - 275px));overflow-y:auto;overscroll-behavior:contain;padding:4px}   /* 4명씩, 많아지면 목록 안에서 스크롤 */
+.charlist{display:grid;grid-template-columns:repeat(4,150px);gap:14px;justify-content:center;grid-column:1/-1;padding:4px}
+@media (max-height:520px){#lookM .card{max-height:calc(100dvh - 12px);overflow-y:auto;gap:6px}#lookM .charcard img:not(.selfie){height:64px}#lookM .charcard .nm2{display:none}#lookM .charcard{gap:3px}.cpager .pbtn{min-width:40px;padding:2px 8px}#lookM .btns{flex-wrap:wrap}#buyMsg{flex-basis:100%!important;font-size:12px}}
+.cpager{display:flex;align-items:center;justify-content:center;gap:14px;font:700 15px/1 var(--font);color:var(--ui-ink)}.cpager .pbtn{min-width:56px;padding:6px 12px}
+.charcard .st{font:700 15px/1.1 var(--font);color:var(--ui-ink)}.charcard .nm2{font:400 11px/1 var(--font);color:var(--ink-soft)}
+.charcard .price{display:inline-flex;align-items:center;gap:4px;font:700 13px/1 var(--font);color:#8a5a00;background:#fff3c4;border-radius:999px;padding:4px 9px;box-shadow:inset 0 0 0 2px #e0b440}.charcard .own{font:700 12px/1 var(--font);color:#1f9a62}
+.charcard.lock img:not(.selfie){filter:saturate(.35) brightness(.92)}.charcard.pick{opacity:1;box-shadow:inset 0 0 0 3px var(--ink),0 0 0 5px #5aa9ff}   /* 4명씩, 많아지면 목록 안에서 스크롤 */
 @media (max-width:760px){.charlist{grid-template-columns:repeat(3,150px)}}
 .charcard{cursor:pointer;border:0;font:inherit;color:var(--ink);opacity:.75}.charcard.on{opacity:1;box-shadow:inset 0 0 0 3px var(--ink),0 0 0 5px #ffbf1f}
 .charcard{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;background:#c9f0ff;box-shadow:inset 0 0 0 3px var(--ink)}
-.charcard{position:relative;width:150px;box-sizing:border-box}.charcard img{height:160px;width:auto;max-width:100%;object-fit:contain;display:block}
+.charcard{position:relative;width:150px;box-sizing:border-box}.charcard img{height:130px;width:auto;max-width:100%;object-fit:contain;display:block}
 .charcard img.selfie{position:absolute;top:8px;right:8px;width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #fff,0 0 0 4px #b9c6ff}
 .charcard b{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (max-height:460px){.charlist{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:112px;justify-content:start;gap:8px;max-height:none;overflow-x:auto;overflow-y:hidden}.charcard{width:auto;min-width:0;padding:6px!important;gap:4px}.charcard img{height:96px}.charcard img.selfie{width:28px;height:28px;top:4px;right:4px}.charcard b{font-size:11px!important}}   /* 낮은 화면: 6명을 한 줄로 */
@@ -427,7 +432,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
   <div id="title" class="layer">
     <div class="logo">
       <div class="big">RHYTHM <b>RACER</b></div>
-      <div class="sub">복습 리듬 레이싱 · 가제</div>
+      <div class="sub">복습 리듬 레이싱</div>
     </div>
     <div class="tap">그림 불러오는 중…</div>
     
@@ -667,7 +672,8 @@ html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);color:var(-
         <div class="lookopts" id="lookOpts" hidden></div>
         <canvas id="lookCv" width="1" height="1" hidden></canvas>
       </div>
-      <div class="btns"><button class="pbtn alt" type="button" id="lookHow">게임 방법 보기</button><button class="pbtn go" type="button" id="lookOk">완료</button></div>
+      <div class="cpager"><button type="button" class="pbtn alt" id="cPrev">◀</button><span id="cPage">1 / 2</span><button type="button" class="pbtn alt" id="cNext">▶</button></div>
+      <div class="btns"><span class="lmsg" id="buyMsg" style="flex:1"></span><button class="pbtn go" type="button" id="lookBuy" hidden>사기</button><button class="pbtn go" type="button" id="lookOk">완료</button></div>
     </div>
   </div>
 
@@ -1153,7 +1159,7 @@ async function loadScene(){
 }
 const GRASS_T=2.0,GRASS_RES=2;
 /* 화면 아래 작은 글씨: 버전과 그래픽 상태 (휴대폰에서 문제를 찾기 위해) */
-const APP_VER='v107';
+const APP_VER='v108';
 function showDiag(){const el=document.getElementById('credit');if(!el)return;
   const parts=[APP_VER,SCN.gl?(SCN.gl.arena?'그래픽: 고급':'그래픽: 고급(경기장 없음)'):'그래픽: 기본'+(SCN.glErr?' ('+SCN.glErr+')':''),SCN.arenaImg?'경기장 OK':'경기장 그림 없음',SP.kid&&SP.kid.anim?'캐릭터 OK':'캐릭터 기본'];
   parts.push('프레임 '+Object.values(BOARD).reduce((a,v)=>a+(v?v.filter(Boolean).length:0),0)+' · 화면 '+lab.width+'x'+lab.height+(SCN.hiFail?' · 대체 그리기':''));
@@ -2707,14 +2713,14 @@ $('loginOk').onclick=async()=>{const n=$('nickIn').value.trim(),pin=$('pinIn').v
     $('loginOk').disabled=false;$('loginMsg').textContent='';useChar(DEF_CHAR);sfx('right');$('loginM').hidden=true;renderSelect();openProfile(true);return;}
   const u=await ACC.login(n,pin);if(!u||u.err)return msg(u&&u.err==='pin'?'비밀번호가 틀렸어요':'없는 별명이에요. 처음이면 "처음이에요"를 눌러요');
   $('loginOk').disabled=false;$('loginMsg').textContent='';
-  useChar(CHARS.some(c=>c.id===u.char)?u.char:DEF_CHAR);sfx('right');$('loginM').hidden=true;renderSelect();openMode();
+  useChar(CHARS.some(c=>c.id===u.char)&&ownsChar(u.char)?u.char:DEF_CHAR);sfx('right');$('loginM').hidden=true;renderSelect();openMode();
 };
 /* 선생님: 학생 목록 · 비밀번호 초기화 · 코인 주기/빼기 · 삭제 */
 let STU=null;   /* 선생님 화면용 학생 목록 (서버에서 받은 것) */
 function renderStudents(){const a=STU||ACC.all(),ks=Object.keys(a).sort((x,y)=>a[x].nick.localeCompare(a[y].nick,'ko'));
   $('stuTag').textContent=ks.length+'명';
   $('stuList').innerHTML=ks.length?ks.map(k=>{const u=a[k],ch=CHARS.find(c=>c.id===u.char)||CHARS[0];
-    return `<div class="sturow" data-k="${esc(k)}"><div style="min-width:0"><b>${esc(u.nick)}</b><small>${ch.name} · ${u.plays||0}판 · 마지막 ${u.lastDay?new Date(u.lastDay).toLocaleDateString('ko-KR'):'-'}</small></div>
+    return `<div class="sturow" data-k="${esc(k)}"><div style="min-width:0"><b>${esc(u.nick)}</b><small>${CHAR_STYLE[ch.id]||ch.name} 스타일 · ${u.plays||0}판 · 마지막 ${u.lastDay?new Date(u.lastDay).toLocaleDateString('ko-KR'):'-'}</small></div>
       <span class="coin"><i></i>${u.coins||0}</span>
       <div class="acts"><button type="button" class="tg" data-a="c+10">+10</button><button type="button" class="tg" data-a="c+50">+50</button><button type="button" class="tg" data-a="c-10">-10</button><button type="button" class="tg" data-a="pin">비번 0000</button><button type="button" class="tg" data-a="del">삭제</button></div></div>`;}).join('')
     :'<div style="font:400 13px/1.6 var(--font);color:var(--ink-soft);padding:16px;text-align:center">아직 만든 계정이 없어요.</div>';
@@ -2741,11 +2747,36 @@ $('rankClear').onclick=()=>{if(!S.teacher)return;const s=SONGS[S.songIdx];RANK.c
 /* 처음 들어오면: 이름·캐릭터 → 게임 방법 → 곡 선택 */
 let profFirst=false;
 function openProfile(first){profFirst=!!first;$('profNick').textContent=playerName();$('profCoin').textContent=myCoins();$('lookTitle').textContent=first?'반가워요! 캐릭터를 골라요':'내 정보';
-  $('logoutBtn').hidden=!!first;$('lookOk').textContent=first?'다음 ▶':'완료';renderChars();$('lookM').hidden=false;}
-function renderChars(){$('charList').innerHTML=CHARS.filter(c=>BOARD_META[c.id]).map(c=>`<button type="button" class="charcard ${S.look.gen===c.id?'on':''}" data-id="${c.id}"><img src="${c.img}" alt="${c.name}">${c.selfie?`<img class="selfie" src="${c.selfie}" alt="">`:''}<b style="font:700 13px/1 var(--font)">${c.name}</b>${S.look.gen===c.id?'<span class="tag">선택됨</span>':''}</button>`).join('');
-  $('charList').querySelectorAll('.charcard').forEach(b=>b.onclick=()=>{const id=b.dataset.id;useChar(id);store.set('look',S.look);ACC.update(u=>{u.char=id;});sfx('ui');renderChars();});}
+  $('logoutBtn').hidden=!!first;$('lookOk').textContent=first?'다음 ▶':'완료';
+  {if(!ownsChar(S.look.gen)){useChar(DEF_CHAR);store.set('look',S.look);ACC.update(u=>{u.char=DEF_CHAR;});}const g=S.look.gen;   /* 사지 않은 캐릭터를 쓰고 있으면 기본으로 */
+   const L=CHARS.filter(c=>BOARD_META[c.id]);cPage=Math.max(0,Math.floor(L.findIndex(c=>c.id===g)/C_PER));cPick=null;}
+  renderChars();$('lookM').hidden=false;}
+/* ===== 캐릭터 가게: 체육복 2명은 무료, 나머지는 코인으로 사기 ===== */
+const CHAR_PRICE={Q:0,R:0,E:300,F:300,G:300,I:300,O:300,H:600,J:600,K:600,P:600,N:600,L:1000,M:1000};
+const CHAR_STYLE={Q:'체육복',R:'체육복',E:'데일리',F:'핑크 캐주얼',G:'아웃도어',H:'정장',I:'후드 스트릿',J:'러블리 드레스',K:'레이서',L:'히어로',M:'눈사람',N:'요정',O:'축구',P:'태권도'};
+const CHAR_SUB={Q:'기본 · 여자',R:'기본 · 남자'};
+function charPrice(id){return CHAR_PRICE[id]??500;}
+function ownsChar(id){if(!charPrice(id)||S.teacher)return true;const u=ACC.cur();return !!(u&&(u.owned||[]).includes(id));}
+let cPage=0,cPick=null;const C_PER=8;
+function renderChars(){const L=CHARS.filter(c=>BOARD_META[c.id]),pages=Math.max(1,Math.ceil(L.length/C_PER));
+  if(cPage>=pages)cPage=pages-1;const coins=myCoins();$('profCoin').textContent=coins;
+  $('charList').innerHTML=L.slice(cPage*C_PER,cPage*C_PER+C_PER).map(c=>{const own=ownsChar(c.id),on=S.look.gen===c.id,pr=charPrice(c.id);
+    return `<button type="button" class="charcard ${on?'on':''}${own?'':' lock'}${cPick===c.id?' pick':''}" data-id="${c.id}"><img src="${c.img}" alt="${CHAR_STYLE[c.id]||''}">${c.selfie?`<img class="selfie" src="${c.selfie}" alt="">`:''}<span class="st">${CHAR_STYLE[c.id]||c.name}</span>${CHAR_SUB[c.id]?`<span class="nm2">${CHAR_SUB[c.id]}</span>`:''}${on?'<span class="tag">사용 중</span>':own?(pr?'<span class="own">가지고 있어요</span>':'<span class="own">무료</span>'):`<span class="price">🪙 ${pr}</span>`}</button>`;}).join('');
+  $('cPage').textContent=`${cPage+1} / ${pages}`;$('cPrev').disabled=cPage<=0;$('cNext').disabled=cPage>=pages-1;
+  const b=$('lookBuy'),m=$('buyMsg');
+  if(cPick&&!ownsChar(cPick)){const pr=charPrice(cPick),st=CHAR_STYLE[cPick]||'';b.hidden=false;
+    if(coins>=pr){b.disabled=false;b.textContent=`${st} 사기 (🪙${pr})`;m.textContent='';}
+    else{b.disabled=true;b.textContent=`${st} 🪙${pr}`;m.textContent=`코인이 ${pr-coins}개 모자라요. 노래를 더 달려서 모아요!`;}}
+  else{b.hidden=true;m.textContent='';}
+  $('charList').querySelectorAll('.charcard').forEach(el=>el.onclick=()=>{const id=el.dataset.id;sfx('ui');
+    if(!ownsChar(id)){cPick=id;renderChars();return;}
+    cPick=null;useChar(id);store.set('look',S.look);ACC.update(u=>{u.char=id;});renderChars();});}
+$('cPrev').onclick=()=>{if(cPage>0){cPage--;cPick=null;sfx('ui');renderChars();}};
+$('cNext').onclick=()=>{cPage++;cPick=null;sfx('ui');renderChars();};
+$('lookBuy').onclick=()=>{const id=cPick;if(!id||ownsChar(id))return;const pr=charPrice(id);if(myCoins()<pr){sfx('wrong');return;}
+  ACC.update(u=>{u.coins=(u.coins||0)-pr;u.owned=[...new Set([...(u.owned||[]),id])];u.char=id;});
+  cPick=null;useChar(id);store.set('look',S.look);sfx('right');toast(`${CHAR_STYLE[id]||''} 스타일을 샀어요!`,`남은 코인 ${myCoins()}`);renderChars();renderSelect();};
 $('lookBtn').onclick=$('meBtn').onclick=()=>{sfx('ui');if(!playerName()){openLogin();return;}openProfile(false);};
-$('lookHow').onclick=()=>{sfx('ui');$('lookM').hidden=true;openHow(false);};
 $('lookOk').onclick=()=>{sfx('ui');$('lookM').hidden=true;renderSelect();
   if(profFirst)openHow(false,true);};   // 처음 가입한 학생: 게임 방법을 보고 바로 연습
 if(0)$('lookRand').onclick=()=>{for(const p in LOOKS){const vs=Object.keys(LOOKS[p]);S.look[p]=vs[Math.random()*vs.length|0];}store.set('look',S.look);composeKid();sfx('ui');renderLookOpts();};
